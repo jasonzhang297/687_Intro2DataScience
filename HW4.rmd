@@ -1,0 +1,162 @@
+# Intro to Data Science - HW 4
+
+##### Copyright 2021, Jeffrey Stanton, Jeffrey Saltz, and Jasmina Tacheva
+
+
+```{r}
+# Enter your name here: Yunhan Zhang
+```
+
+### Attribution statement: (choose only one and delete the rest)
+
+
+```{r}
+# 1. I did this homework by myself, with help from the book and the professor.
+```
+
+**(Chapters 8, 9, and 10 of Introduction to Data Science)** <br>
+
+Reminders of things to practice from previous weeks: <br>
+Descriptive statistics: 	mean( )  max( ) min( )<br>
+Sequence operator:		: (For example, 1:4 is shorthand for 1, 2, 3, 4)<br>
+Create a function:		myFunc <- function(myArg) { }<br>
+?command:			Ask R for help with a command<br>
+
+**This module:** **Sampling** is a process of **drawing elements from a larger set**. In data science, when analysts work with data, they often work with a sample of the data, rather than all of the data (which we call the **population**), because of the expense of obtaining all of the data. <br>
+
+One must be careful, however, because **statistics from a sample rarely match the characteristics of the population**. The **goal of this homework** is to **sample from a data set several times and explore the meaning of the results**. Before you get started make sure to read Chapters 8-10 of An Introduction to Data Science. Don’t forget your comments!
+
+
+## Part 1: Write a function to compute statistics for a vector of numeric values
+
+A.	Create a new function which takes a numeric vector as its input argument and returns a dataframe of statistics about that vector as the output. As a start, the dataframe should have the min, mean, and max of the vector. The function should be called **vectorStats**:
+
+
+```{r}
+vectorStats <- function(vector){
+  min <- min(vector)
+  mean <- mean(vector)
+  max <- max(vector)
+  df <- data.frame(min, mean, max)
+  return(df)
+}
+```
+
+B.	Test your function by calling it with the numbers **one through ten**:
+
+
+```{r}
+vectorStats(1:10)
+```
+
+C.	Enhance the vectorStats() function to add the **median** and **standard deviation** to the returned dataframe.
+
+
+```{r}
+vectorStats <- function(vector){
+  min <- min(vector)
+  mean <- mean(vector)
+  max <- max(vector)
+  median <- median(vector)
+  sd <- sd(vector)
+  df <- data.frame(min, mean, max, median, sd)
+  return(df)
+}
+```
+
+D.	Retest your enhanced function by calling it with the numbers **one through ten**:
+
+
+```{r}
+vectorStats(1:10)
+```
+
+## Part 2: Sample repeatedly from the mtcars built-in dataframe
+
+E.	Copy the mtcars dataframe:
+
+
+```{r}
+myCars <- mtcars
+```
+
+Use **head(myCars)** and **tail(myCars)** to show the data. Add a comment that describes what each variable in the data set contains. <br>
+**Hint:** Use the ?  or help( ) command with mtcars to get help on this dataset.
+
+
+```{r}
+head(myCars)
+tail(myCars)
+help(mtcars)
+# mpg	means Miles/(US) gallon
+# cyl means Number of cylinders
+# disp means Displacement (cu.in.)
+# hp means Gross horsepower
+# drat means Rear axle ratio
+# wt means Weight (1000 lbs)
+# qsec means 1/4 mile time
+# am means Transmission (0 = automatic, 1 = manual)
+# gear means Number of forward gears
+# carb means Number of carburetors
+```
+
+F.	Sample three observations from **myCars$mpg**.
+
+
+```{r}
+sample(myCars$mpg, size=3, replace=TRUE)
+```
+
+G.	Call your vectorStats( ) function with a new sample of three observations from **myCars$mpg**, where the sampling is done inside the **vectorStats** function call. Then use the **mean** function, with another sample done inside the mean function. Is the mean returned from the vectorStats function from the first sample the same as the mean returned from the mean function on the second sample? Why or Why not?
+
+
+```{r}
+vectorStats(sample(myCars$mpg, size=3, replace=TRUE))
+```
+```{r}
+mean(sample(myCars$mpg, size=3, replace=TRUE))
+# Generally the means should not be the same because they will sampling different samples in the most cases but with some extreme cases, the means will be the same.
+```
+
+H.	Use the replicate( ) function to repeat your sampling of mtcars ten times, with each sample calling mean() on three observations. The first argument to replicate( ) is the number of repeats you want. The second argument is the little chunk of code you want repeated.
+
+
+```{r}
+replicate(10, mean(sample(myCars$mpg, size=3, replace=TRUE)),simplify = TRUE)
+```
+
+I.	Write a comment describing why every replication produces a different result.
+
+
+```{r}
+# Generally the means should not be the same because they will sampling different samples in the most cases but with some extreme cases, the means will be the same (I did get two same means from my first run).
+```
+
+J.	Rerun your replication, this time doing 1000 replications and storing the output of replicate() in a variable called **values**.
+
+
+```{r}
+values <- replicate(1000, mean(sample(myCars$mpg, size=3, replace=TRUE)),simplify = TRUE)
+values
+```
+
+K.	 Generate a **histogram** of the means stored in **values**. 
+
+
+```{r}
+hist(values)
+```
+
+L.	Repeat the replicated sampling, but this time, raise your sample size from **3 to 22**. 
+
+
+```{r}
+hist(replicate(1000, mean(sample(myCars$mpg, size=22, replace=TRUE)),simplify = TRUE))
+```
+
+M. Compare the two histograms - why are they different? Explain in a comment.
+
+
+```{r}
+#  Because the second run sampling more samples than the first run. Based on the law of large numbers: more samples you sampling, more stable result you will get.
+```

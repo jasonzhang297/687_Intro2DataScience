@@ -1,0 +1,188 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+## Intro to Data Science - HW 1
+##### Copyright Jeffrey Stanton, Jeffrey Saltz, and Jasmina Tacheva
+
+
+```{r}
+# Enter your name here: Yunhan Zhang
+```
+
+### Attribution statement: (choose only one and delete the rest)
+
+
+```{r}
+# 1. I did this homework by myself, with help from the book and the professor.
+```
+
+Define a variable:
+
+variable **x** has the value of 280.
+
+
+```{r}
+x <- 280
+```
+
+Define the following vectors, which represent the **population** (in thousands) and **number of colleges** in each of the five counties in Central New York (CNY) – **Cayuga**, **Cortland**, **Madison**, **Onondaga**, and **Oswego**, in this order:
+
+Cayuga has 80000 population; Cortland has 49,000 population; Madison has 73,000 population; Onondaga has 467,000 population; Oswego has 122,000 population.
+Cayuga has 2 colleges; Cortland has 2 colleges; Madison has 3 colleges; Onondaga has 9 colleges; Oswego has 2 colleges.
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+```
+
+# Part 1: Calculating statistics using R  
+
+A.	Show the number of observations in the **population** vector with the length() function: 
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+length(population)
+```
+
+B.	Show the number of observations in the **colleges** vector with the length() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+length(colleges)
+```
+
+C.	Calculate the average CNY population using the mean() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+mean(population)
+```
+
+D.	Calculate the average number of colleges in CNY using the mean() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+mean(colleges)
+```
+
+E.	Calculate the total CNY population using the sum() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+sum(population)
+```
+
+F.	Calculate the total number of colleges in CNY using the sum() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+sum(colleges)
+```
+
+G.	Calculate the average CNY population again, this time using **the results from steps A & E**:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+sum(population)/length(population)
+```
+
+H.	Calculate the average number of colleges in CNY again, this time using **the results from steps B & F**:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+sum(colleges)/length(colleges)
+```
+
+# Part 2: Using the max/min and range functions in {r}
+
+I.	How many colleges does the county with most colleges have? Hint: Use the max() function:
+
+It returns 9 therefore Onondaga has the most colleges.
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+max(colleges)
+```
+
+J.	What is the population of the least populous county in CNY? **Hint:** Use the min() function:
+
+It returns 49 therefore Cortland has the least populations.
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+min(population)
+```
+
+K.	Display the populations of the least populous and most populous county in the dataset together. **Hint:** Use the range() function:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+range(population)
+```
+
+# Part 3: Vector Math
+
+L.	Create a new vector called **extraPop**, which is the current population of a county **+ 50** (each county has 50,000 more people):
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+extraPop <- population + 50
+extraPop
+```
+
+M.	 Calculate the average of **extraPop**:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+extraPop <- population + 50
+mean(extraPop)
+```
+
+N.	In a variable called **bigCounties**, store all the population numbers from the original **population** vector which are **greater than 120** (using **subsetting** in R):
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+bigCounties <- population[population>120]
+bigCounties
+```
+
+O.	Report the length of **bigCounties**:
+
+
+```{r}
+population <- c(80, 49, 73, 467, 122)
+colleges <- c(2, 2, 3, 9, 2)
+bigCounties <- population[population>120]
+length(bigCounties)
+```

@@ -1,0 +1,176 @@
+# Intro to Data Science - Final Project
+##### Made by, Yeling Cai, Yunhan Zhang, and Zekai Wei
+
+## Read the data into a dataframe called **df**:
+```{r}
+library(tidyverse)
+df <- read_csv("/Users/jasonzhang/Desktop/IST-687/Resort01.csv")
+summary(df)
+str(df)
+```
+
+## Visualize the variables with histograms and boxplots part 1:
+```{r}
+
+df$IsCanceled[is.na(df$IsCanceled)]
+df$LeadTime[is.na(df$LeadTime)]
+df$StaysInWeekendNights[is.na(df$StaysInWeekendNights)]
+df$StaysInWeekNights[is.na(df$StaysInWeekNights)]
+df$Adults[is.na(df$Adults)]
+df$Children[is.na(df$Children)]
+df$Babies[is.na(df$Babies)]
+df$Meal[is.na(df$Meal)]
+df$Country[is.na(df$Country)]
+df$MarketSegment[is.na(df$MarketSegment)]
+df$IsRepeatedGuest[is.na(df$IsRepeatedGuest)]
+df$PreviousCancellations[is.na(df$PreviousCancellations)]
+df$PreviousBookingsNotCanceled[is.na(df$PreviousBookingsNotCanceled)]
+df$ReservedRoomType[is.na(df$ReservedRoomType)]
+df$AssignedRoomType[is.na(df$AssignedRoomType)]
+df$BookingChanges[is.na(df$BookingChanges)]
+df$DepositType[is.na(df$BookingChanges)]
+df$DepositType[is.na(df$DepositType)]
+df$CustomerType[is.na(df$CustomerType)]
+df$RequiredCarParkingSpaces[is.na(df$RequiredCarParkingSpaces)]
+df$TotalOfSpecialRequests[is.na(df$TotalOfSpecialRequests)]
+
+
+
+hist(df$IsCanceled)
+hist(df$LeadTime)
+boxplot(df$LeadTime)
+boxplot(df$StaysInWeekendNights)
+boxplot(df$StaysInWeekNights)
+boxplot(df$Adults)
+boxplot(df$Children)
+boxplot(df$Babies)
+hist(df$IsRepeatedGuest)
+boxplot(df$PreviousCancellations)
+boxplot(df$BookingChanges)
+boxplot(df$TotalOfSpecialRequests)
+```
+
+## Visualize the variables with histograms and boxplots part 2:
+```{r}
+df$IsCanceled <- as.character(df$IsCanceled)
+ggplot(df) + aes(x=IsCanceled,y=LeadTime) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=StaysInWeekendNights) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=StaysInWeekNights) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=Adults) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=Children) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=Babies) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=PreviousBookingsNotCanceled) + geom_boxplot()
+ggplot(df) + aes(x=IsCanceled,y=TotalOfSpecialRequests) + geom_boxplot()
+
+dfCanceled <- df[df$IsCanceled=="1",]
+dfNotCanceled <- df[df$IsCanceled=="0",]
+
+df$IsSameRoom <- df$AssignedRoomType==df$ReservedRoomType
+ggplot(df,aes(x=Meal)) + geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=MarketSegment)) + geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=CustomerType)) + geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=DepositType)) + geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=IsRepeatedGuest))+geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=IsSameRoom))+geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=RequiredCarParkingSpaces))+geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=PreviousCancellations))+geom_bar(aes(fill=IsCanceled))
+ggplot(df,aes(x=BookingChanges))+geom_bar(aes(fill=IsCanceled))
+```
+
+## Mapping:
+```{r}
+library(rworldmap)
+mmap <- df
+mmap$IsCanceled <- as.numeric(mmap$IsCanceled)
+mmaps <- mmap %>% group_by(Country) %>% summarise(IsCanceled=mean(IsCanceled,na.rm=T))
+mmaps <- joinCountryData2Map(mmaps, joinCode = "ISO3", nameJoinColumn = "Country")
+mapCountryData(mmaps,nameColumnToPlot='IsCanceled',catMethod='fixedWidth')
+
+SumNumCanceled <- mmap %>% group_by(Country) %>% summarise(SumNumCanceled=sum(IsCanceled,na.rm=T))
+SumNumCanceled[order(SumNumCanceled$SumNumCanceled,decreasing = TRUE)[1:10],]
+CancelRate <- mmap %>% group_by(Country) %>% summarise(CancelRate=mean(IsCanceled,na.rm=T))
+CancelRate[order(CancelRate$CancelRate,decreasing = TRUE)[1:10],]
+```
+
+## Modeling (Tree & SVM):
+```{r}
+library(caret)
+library(rpart)
+library(rpart.plot)
+library(kernlab)
+
+summary(dfCanceled)
+summary(dfNotCanceled)
+newdf <- data.frame(TotalOfSpecialRequests=df$TotalOfSpecialRequests,
+                    RequiredCarParkingSpaces=df$RequiredCarParkingSpaces,
+                    CustomerType=df$CustomerType,
+                    DepositType=df$DepositType,
+                    BookingChanges=df$BookingChanges,
+                    IsSameRoom=(df$AssignedRoomType==df$ReservedRoomType),
+                    PreviousBookingsNotCanceled=df$PreviousBookingsNotCanceled,
+                    PreviousCancellations=df$PreviousCancellations,
+                    IsRepeatedGuest=df$IsRepeatedGuest,
+                    MarketSegment=df$MarketSegment,
+                    Meal=df$Meal,
+                    Adults=df$Adults,
+                    Children=df$Children,
+                    Babies=df$Babies,
+                    StaysInWeekNights=df$StaysInWeekNights,
+                    StaysInWeekendNights=df$StaysInWeekendNights,
+                    LeadTime=df$LeadTime,
+                    IsCanceled=as.factor(df$IsCanceled))
+
+trainList <- createDataPartition(y=newdf$IsCanceled, p=.60, list=FALSE)
+trainSet <- newdf[trainList,]
+testSet <- newdf[-trainList,]
+cartTree <- rpart(IsCanceled ~., data = trainSet)
+prp(cartTree, faclen = 0, cex = 0.8, extra = 1)
+rpart.plot(cartTree)
+fit1 <- train(IsCanceled ~ ., data=trainSet, method="treebag", preProc=c("center", "scale"))
+varImp(fit1)
+predictValues <- predict(fit1, newdata=testSet)
+confusion <- confusionMatrix(predictValues, testSet$IsCanceled)
+confusion
+
+
+newdf1 <- data.frame(RequiredCarParkingSpaces=df$RequiredCarParkingSpaces,
+                    CustomerType=df$CustomerType,
+                    DepositType=df$DepositType,
+                    BookingChanges=df$BookingChanges,
+                    IsSameRoom=(df$AssignedRoomType==df$ReservedRoomType),
+                    PreviousCancellations=df$PreviousCancellations,
+                    IsRepeatedGuest=df$IsRepeatedGuest,
+                    LeadTime=df$LeadTime,
+                    IsCanceled=as.factor(df$IsCanceled))
+
+trainList <- createDataPartition(y=newdf1$IsCanceled, p=.60, list=FALSE)
+trainSet <- newdf1[trainList,]
+testSet <- newdf1[-trainList,]
+cartTree <- rpart(IsCanceled ~., data = trainSet)
+predictValues <- predict(cartTree, newdata=testSet)
+prp(cartTree, faclen = 0, cex = 0.8, extra = 1)
+rpart.plot(cartTree)
+fit1 <- train(IsCanceled ~ ., data=trainSet, method="treebag", preProc=c("center", "scale"))
+varImp(fit1)
+predictValues <- predict(fit1, newdata=testSet)
+confusion <- confusionMatrix(predictValues, testSet$IsCanceled)
+confusion
+
+
+
+
+model <- train(IsCanceled~ ., data=trainSet, method="svmRadial", preProc=c("center","scale"))
+pred0ut <- predict(model, newdata=testSet)
+confusion <- confusionMatrix(pred0ut, testSet$IsCanceled)
+confusion
+```
+
+## Finding rules:
+```{r}
+library(arules)
+library(arulesViz)
+
+ruleset <- apriori(newdf, parameter=list(supp=0.1, conf=0.5), control=list(verbose=F), appearance=list(default="lhs",rhs=("IsCanceled=1")))
+inspect(ruleset)
+```
+

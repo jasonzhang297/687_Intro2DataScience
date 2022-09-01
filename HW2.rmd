@@ -1,0 +1,141 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+# Intro to Dat Science - HW 2
+##### Copyright  Jeffrey Stanton, Jeffrey Saltz, and Jasmina Tacheva
+
+
+```{r}
+# Enter your name here: Yunhan Zhang
+```
+
+### Attribution statement: (choose only one and delete the rest)
+
+
+```{r}
+# 1. I did this homework by myself, with help from the book and the professor.
+```
+
+### Reminders of things to practice from last week: 
+Assignment arrow  		<- <br>
+The combine command 	c( ) <br>
+Descriptive statistics 	mean( ) sum( ) max( ) <br>
+Arithmetic operators		+ - * /<br>
+Boolean operators		>    <    >=    <=   ==   !=  <br>
+
+**This Week:** Explore the **quakes** dataset (which is included in R). Copy the **quakes** dataset into a new dataframe (call it **myQuakes**), so that if you need to start over, you can do so easily (by copying quakes into myQuakes again). Summarize the variables in **myQuakes**. Also explore the structure of the dataframe
+
+
+
+```{r}
+myQuakes <- quakes
+myQuakes
+```
+
+**Step 1:** Explore the earthquake magnitude variable called **mag**  <br>
+
+A.	What is the average magnitude? Use mean() or summary():
+
+The average magnitude is 4.62.
+
+
+```{r}
+summary(myQuakes)
+```
+
+B.	What is the magnitude of the largest earthquake? Use max() or summary() and save the result in a variable called **maxQuake**:
+
+The magnitude of the largest earthquake is 6.4.
+
+
+```{r}
+summary(myQuakes)
+maxQuake <- 6.40
+maxQuake
+```
+
+C.	What is the magnitude of the smallest earthquake? Use min() or summary() and save the result in a variable called **minQuake**:
+
+The magnitude of the smallest earthquake is 4.
+
+
+```{r}
+summary(myQuakes)
+minQuake <- 4.00
+minQuake
+```
+
+D.	Output the **third row** of the dataframe
+
+
+```{r}
+myQuakes[3,]
+```
+
+E. Create a new dataframe, with only the rows where the **magnitude is greater than 4**. How many rows are in that dataframe (use code, do not count by looking at the output) 
+
+There are 954 rows in that dataframe.
+
+
+```{r}
+mynewQuakes <- myQuakes[myQuakes$mag > 4,]
+nrow(mynewQuakes)
+```
+
+F.	Create a **sorted dataframe** based on magnitude and store it in **quakeSorted1**. Do the sort two different ways, once with arrange() and then with order()
+
+
+```{r}
+library(tidyverse)
+quakeSorted1 <- myQuakes %>% arrange(mag)
+quakeSorted1
+```
+
+```{r}
+quakeSorted1 <- myQuakes[order(myQuakes$mag),]
+quakeSorted1
+```
+
+
+G.	What are the latitude and longitude of the quake reported by the largest number of stations?  
+
+-17.05 & 181.22
+
+
+```{r}
+questionG <- myQuakes[max(myQuakes$stations),]
+questionG
+```
+
+H.	What are the latitude and longitude of the quake reported by the smallest number of stations?  
+
+-17.47 & 179.59
+
+
+```{r}
+questionH <- myQuakes[min(myQuakes$stations),]
+questionH
+```
+
+**Step 3:** Using conditional if statements <br>
+
+I.	 Test if **maxQuake** is greater than 7 (output “yes” or “no”) <br>
+**Hint:** Try modifying the following code in R: 
+
+
+```{r}
+if  (100 < 150) "100 is less than 150" else "100 is greater than 150"
+```
+
+```{r}
+if  (maxQuake > 7) "Yes" else "No"
+```
+
+J.	 Following the same logic, test if **minQuake** is less than 3 (output “yes” or “no”):
+
+
+```{r}
+if  (minQuake < 3) "Yes" else "No"
+```
